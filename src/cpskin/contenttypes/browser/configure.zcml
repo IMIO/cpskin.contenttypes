@@ -1,0 +1,14 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="cpskin">
+
+  <browser:page
+      name="view"
+      for="cpskin.contenttypes.content.product.IProduct"
+      template="templates/product.pt"
+      layer="cpskin.contenttypes.interfaces.ICpskinContenttypesLayer"
+      permission="zope2.View"
+      />
+
+</configure>

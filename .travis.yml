@@ -1,0 +1,38 @@
+language: python
+addons:
+  firefox: "62.0.3"
+sudo: true
+cache:
+  directories:
+    - eggs
+    - downloads
+python: 2.7
+install:
+  - pip install -r requirements.txt
+  - buildout -N buildout:download-cache=downloads annotate
+  - buildout -t 30 buildout:download-cache=downloads
+before_script:
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
+  - firefox -v
+  - wget https://github.com/mozilla/geckodriver/releases/download/v0.20.1/geckodriver-v0.20.1-linux64.tar.gz
+  - mkdir geckodriver
+  - tar -xzf geckodriver-v0.20.1-linux64.tar.gz -C geckodriver
+  - export PATH=$PATH:$PWD/geckodriver
+script:
+  - bin/code-analysis
+  - bin/test
+after_success:
+  - bin/createcoverage
+  - pip install -q coveralls==0.5
+  - coveralls
+#after_script:
+#  # killing background process (because dockerized build no longer does it)
+#  - kill -9 $(ps aux | grep 'selenium' | awk '{print $2}')
+notifications:
+  email:
+    recipients:
+      - devel@lists.affinitic.be
+      - devs@imio.be
+    on_success: change
+    on_failure: change
