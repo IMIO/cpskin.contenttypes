@@ -9,8 +9,12 @@ logger = logging.getLogger('cpskin.contenttypes')
 
 
 def post_install(context):
-    """We need to migrate existing TTW 'produit' type and contents if any"""
+    """We need to migrate existing TTW content types if any"""
+    migrate_product(context)
 
+
+def migrate_product(context):
+    """Existing TTW 'produit' content type migration"""
     portal_types = api.portal.get_tool(name='portal_types')
     if 'produit' not in portal_types:
         return
@@ -46,10 +50,6 @@ def post_install(context):
         new_product.workflow_history = old_product.workflow_history
         new_product.creators = old_product.creators
         new_product.language = old_product.language
-
-        # TODO : activate taxonomies on content type
-        # new_product.taxonomy_produits = list(old_product.taxonomy_produits)
-        # new_product.taxonomy_typesdeproduits = list(old_product.taxonomy_typesdeproduits)  # NOQA
 
         # copy leadimage
         old_image = old_product.image
