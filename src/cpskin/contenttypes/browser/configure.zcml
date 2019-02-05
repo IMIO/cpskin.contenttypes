@@ -6,6 +6,7 @@
   <browser:page
       name="view"
       for="cpskin.contenttypes.content.product.IProduct"
+      class=".product.ProductView"
       template="templates/product.pt"
       layer="cpskin.contenttypes.interfaces.ICpskinContenttypesLayer"
       permission="zope2.View"
