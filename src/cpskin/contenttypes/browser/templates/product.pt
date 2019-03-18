@@ -11,7 +11,7 @@
 
   <div class="field"
        tal:condition="context/price">
-    <label class="horizontal"
+    <label class="horizontal price"
            for="form-widgets-price"
            i18n:translate="">Price</label>
     <span class="text-widget textline-field"
@@ -21,7 +21,7 @@
 
   <div class="field"
        tal:condition="context/color">
-    <label class="horizontal"
+    <label class="horizontal colors"
            for="form-widgets-color"
            i18n:translate="">Color(s)</label>
     <span class="textarea-widget text-field"
@@ -31,7 +31,7 @@
 
   <div class="field"
        tal:condition="context/size">
-    <label class="horizontal"
+    <label class="horizontal sizes"
            for="form-widgets-size"
            i18n:translate="">Size(s)</label>
     <span class="textarea-widget text-field"
@@ -41,7 +41,7 @@
 
   <div class="field"
        tal:condition="context/informations">
-    <label class="horizontal"
+    <label class="horizontal informations"
            for="form-widgets-informations"
            i18n:translate="">Informations</label>
     <span class="richTextWidget richtext-field"
@@ -53,7 +53,7 @@
     <img tal:define="has_img context/image|nothing;
                      scales context/@@images|nothing"
          tal:condition="python:has_img and scales"
-         tal:replace="structure python: scales.scale('image', scale='news').tag()" />
+         tal:replace="structure python: scales.scale('image', scale='preview').tag()" />
   </div>
 
 </metal:main>

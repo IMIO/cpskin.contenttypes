@@ -5,7 +5,8 @@ Changelog
 1.0.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Minor improvements (leadimage size & more css classes) : WEBOTT-10
+  [laulaz]
 
 
 1.0 (2019-02-05)
