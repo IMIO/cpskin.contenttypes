@@ -5,6 +5,9 @@ Changelog
 1.0.2 (unreleased)
 ------------------
 
+- Add icon for product content type : WEBOTT-10
+  [laulaz]
+
 - Add Fancybox overlay on product image : WEBOTT-10
   [laulaz]
 

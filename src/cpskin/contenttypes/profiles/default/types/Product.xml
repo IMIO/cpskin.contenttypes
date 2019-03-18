@@ -13,7 +13,7 @@
 
   <property name="allow_discussion">False</property>
   <property name="factory">Product</property>
-  <property name="icon_expr">string:${portal_url}/document_icon.png</property>
+  <property name="icon_expr">string:${portal_url}/++resource++cpskin.contenttypes.resources/product.png</property>
   <property name="link_target"></property>
 
   <property name="global_allow">True</property>
