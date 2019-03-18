@@ -9,6 +9,14 @@
 
 <metal:main fill-slot="content-core">
 
+  <script type="text/javascript">
+      jQuery(document).ready(function($) {
+          if (typeof $('.product-leadImage a').fancybox === "function") { 
+              $('.product-leadImage a').fancybox();
+          }
+      });
+  </script>
+
   <div class="field"
        tal:condition="context/price">
     <label class="horizontal price"
@@ -50,10 +58,14 @@
   </div>
 
   <div class="product-leadImage" tal:condition="view/available">
-    <img tal:define="has_img context/image|nothing;
-                     scales context/@@images|nothing"
-         tal:condition="python:has_img and scales"
-         tal:replace="structure python: scales.scale('image', scale='preview').tag()" />
+    <a href="" title=""
+       tal:define="has_img context/image|nothing;
+                   scales context/@@images|nothing;"
+       tal:condition="python:has_img and scales"
+       tal:attributes="href python: scales.scale('image').url;
+                       title context/Title">
+      <img tal:replace="structure python: scales.scale('image', scale='preview').tag()" />
+    </a>
   </div>
 
 </metal:main>
