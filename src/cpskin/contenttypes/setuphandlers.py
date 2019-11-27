@@ -21,7 +21,6 @@ def migrate_procedures(context):
     existing_brains = []
     # new type Procedure.
     if "Procedure" not in portal_types:
-        import ipdb; ipdb.set_trace()  # noqa
         context.runImportStepFromProfile("profile-cpskin.contenttypes:default", "typeinfo")
         context.runImportStepFromProfile("profile-cpskin.contenttypes:default", "rolemap")
 
