@@ -51,6 +51,7 @@ setup(
         'plone.app.contenttypes',
         'plone.app.imagecropping',
         'cpskin.locales',
+        'unidecode',
     ],
     extras_require={
         'test': [
