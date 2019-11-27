@@ -10,6 +10,11 @@
         title="cpskin.contenttypes: Add Product"
     />
 
+    <permission
+        id="cpskin.contenttypes.AddProcedure"
+        title="cpskin.contenttypes: Add Procedure"
+    />
+
   </configure>
 
 </configure>

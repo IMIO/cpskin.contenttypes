@@ -19,4 +19,12 @@
       post_handler=".setuphandlers.post_install"
       />
 
+  <genericsetup:upgradeStep
+      title="Migrate to 'procedure'"
+      description="Migrate old document tagged 'demarche...' and TTW dexterity 'demarche' to new content-type 'procedure'"
+      handler=".setuphandlers.migrate_procedures"
+      source="1000"
+      destination="1001"
+      profile="cpskin.contenttypes:default"
+      />
 </configure>
