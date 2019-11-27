@@ -4,6 +4,7 @@ from plone import api
 from plone.app.textfield.value import RichTextValue
 from plone.namedfile.file import NamedBlobImage
 import logging
+import unidecode
 
 logger = logging.getLogger('cpskin.contenttypes')
 
@@ -11,6 +12,72 @@ logger = logging.getLogger('cpskin.contenttypes')
 def post_install(context):
     """We need to migrate existing TTW content types if any"""
     migrate_product(context)
+    migrate_procedures(context)
+
+
+def migrate_procedures(context):
+    # keywords (DEMARCHE)
+    portal_types = api.portal.get_tool(name='portal_types')
+    existing_brains = []
+    # new type Procedure.
+    if "Procedure" not in portal_types:
+        import ipdb; ipdb.set_trace()  # noqa
+        context.runImportStepFromProfile("profile-cpskin.contenttypes:default", "typeinfo")
+        context.runImportStepFromProfile("profile-cpskin.contenttypes:default", "rolemap")
+
+    # types to migrate
+    if 'demarche' in portal_types:
+        existing_brains = api.content.find(portal_type='demarche')
+    else:
+        existing_document_brains = api.content.find(portal_type='Document')
+        for brain in existing_document_brains:
+            for tag in brain.isearchTags:
+                if "DEMARCHE" in unidecode.unidecode(tag).upper():
+                    existing_brains.append(tag)
+    for brain in existing_brains:
+        old_procedure = brain.getObject()
+        container = old_procedure.aq_parent
+        new_id = old_procedure.id
+        temp_id = 'new-{0}'.format(new_id)
+        # new type "Procedure"
+        new_procedure = api.content.create(
+            container=container,
+            type='Procedure',
+            id=temp_id,
+            title=old_procedure.Title(),
+            safe_id=False,
+        )
+        new_procedure.description = old_procedure.Description()
+        if hasattr(old_procedure, "e_guichet"):
+            new_procedure.e_guichet = old_procedure.e_guichet
+        if old_procedure.texte:
+            new_procedure.text = RichTextValue(
+                raw=old_procedure.texte.raw,
+                mimeType=old_procedure.texte.mimeType,
+                outputMimeType=old_procedure.texte.outputMimeType,
+            )
+        new_procedure.effective_date = old_procedure.effective_date
+        new_procedure.creation_date = old_procedure.creation_date
+        modification_date = old_procedure.modification_date
+        new_procedure.workflow_history = old_procedure.workflow_history
+        new_procedure.creators = old_procedure.creators
+        new_procedure.language = old_procedure.language
+        new_procedure.modification_date = modification_date
+        new_procedure.reindexObject(idxs=['modified'])
+
+        # restore workflow state
+        state = api.content.get_state(old_procedure)
+        api.content.transition(obj=new_procedure, to_state=state)
+
+        api.content.delete(obj=old_procedure, check_linkintegrity=True)
+        api.content.rename(obj=new_procedure, new_id=new_id, safe_id=True)
+        new_procedure.reindexObject()
+
+        new_procedure.modification_date = modification_date
+        new_procedure.reindexObject(idxs=['modified'])
+        logger.info('Migrated procedure {0}'.format(new_procedure.absolute_url()))
+    if 'demarche' in portal_types:
+        del portal_types['demarche']
 
 
 def migrate_product(context):
