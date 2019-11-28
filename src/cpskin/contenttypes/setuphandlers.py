@@ -3,31 +3,122 @@
 from plone import api
 from plone.app.textfield.value import RichTextValue
 from plone.namedfile.file import NamedBlobImage
-import logging
+from Products.CMFPlone.interfaces.siteroot import IPloneSiteRoot
+from Products.CMFPlone.utils import safe_unicode
 
-logger = logging.getLogger('cpskin.contenttypes')
+import copy
+import logging
+import Missing
+import unidecode
+
+
+logger = logging.getLogger("cpskin.contenttypes")
 
 
 def post_install(context):
     """We need to migrate existing TTW content types if any"""
     migrate_product(context)
+    migrate_procedures(context)
+
+
+def migrate_procedures(context):
+    # keywords (DEMARCHE)
+    portal_types = api.portal.get_tool(name="portal_types")
+    existing_brains = []
+    # new type Procedure.
+    if "Procedure" not in portal_types:
+        context.runImportStepFromProfile(
+            "profile-cpskin.contenttypes:default", "typeinfo"
+        )
+        context.runImportStepFromProfile(
+            "profile-cpskin.contenttypes:default", "rolemap"
+        )
+
+    # Récupérer les mots clés "je trouve"
+    # types to migrate
+    if "demarche" in portal_types:
+        existing_brains = api.content.find(portal_type="demarche")
+    else:
+        existing_document_brains = api.content.find(portal_type="Document")
+        for brain in existing_document_brains:
+            if brain.isearchTags == Missing.Value or brain.isearchTags is None:
+                continue
+            for tag in brain.isearchTags:
+                if "DEMARCHE" in unidecode.unidecode(safe_unicode(tag)).upper():
+                    existing_brains.append(brain)
+    for brain in existing_brains:
+        old_procedure = brain.getObject()
+        container = old_procedure.aq_parent
+        # No procedure in PloneSite root
+        # In each site, there is a document with a keyword
+        # "démarche administrative" that stores the keyword.
+        if IPloneSiteRoot.providedBy(container):
+            continue
+        new_id = old_procedure.id
+        temp_id = "new-{0}".format(new_id)
+        # new type "Procedure"
+        new_procedure = api.content.create(
+            container=container,
+            type="Procedure",
+            id=temp_id,
+            title=old_procedure.Title(),
+            safe_id=False,
+        )
+
+        new_procedure.description = old_procedure.Description()
+        if hasattr(old_procedure, "e_guichet"):
+            new_procedure.e_guichet = old_procedure.e_guichet
+        if old_procedure.text:
+            new_procedure.text = RichTextValue(
+                raw=old_procedure.text.raw,
+                mimeType=old_procedure.text.mimeType,
+                outputMimeType=old_procedure.text.outputMimeType,
+            )
+        new_procedure.effective_date = old_procedure.effective_date
+        new_procedure.creation_date = old_procedure.creation_date
+        modification_date = old_procedure.modification_date
+        new_procedure.workflow_history = old_procedure.workflow_history
+        new_procedure.creators = old_procedure.creators
+        new_procedure.language = old_procedure.language
+        new_procedure.hiddenTags = copy.deepcopy(old_procedure.hiddenTags)
+        new_procedure.iamTags = copy.deepcopy(old_procedure.iamTags)
+        new_procedure.isearchTags = copy.deepcopy(old_procedure.isearchTags)
+        new_procedure.standardTags = copy.deepcopy(old_procedure.standardTags)
+        new_procedure.relatedItems = copy.deepcopy(old_procedure.relatedItems)
+
+        new_procedure.modification_date = modification_date
+        new_procedure.reindexObject(idxs=["modified"])
+
+        # restore workflow state
+        state = api.content.get_state(old_procedure)
+        api.content.transition(obj=new_procedure, to_state=state)
+
+        api.content.delete(obj=old_procedure, check_linkintegrity=True)
+        api.content.rename(obj=new_procedure, new_id=new_id, safe_id=True)
+        new_procedure.reindexObject()
+
+        new_procedure.modification_date = modification_date
+        new_procedure.reindexObject(idxs=["modified"])
+        logger.info("Migrated procedure {0}".format(new_procedure.absolute_url()))
+    if "demarche" in portal_types:
+        del portal_types["demarche"]
 
 
 def migrate_product(context):
     """Existing TTW 'produit' content type migration"""
-    portal_types = api.portal.get_tool(name='portal_types')
-    if 'produit' not in portal_types:
+    portal_types = api.portal.get_tool(name="portal_types")
+    if "produit" not in portal_types:
         return
 
-    existing_brains = api.content.find(portal_type='produit')
+    existing_brains = api.content.find(portal_type="produit")
     for brain in existing_brains:
         old_product = brain.getObject()
         container = old_product.aq_parent
         new_id = old_product.id
-        temp_id = 'new-{0}'.format(new_id)
+        temp_id = "new-{0}".format(new_id)
         new_product = api.content.create(
             container=container,
-            type='Product',
+            type="Product",
             id=temp_id,
             title=old_product.Title(),
             safe_id=False,
@@ -56,11 +147,8 @@ def migrate_product(context):
         if old_image:
             filename = old_image.filename
             old_image_data = old_image.data
-            namedblobimage = NamedBlobImage(
-                data=old_image_data,
-                filename=filename,
-            )
-            setattr(new_product, 'image', namedblobimage)
+            namedblobimage = NamedBlobImage(data=old_image_data, filename=filename,)
+            setattr(new_product, "image", namedblobimage)
 
         # restore workflow state
         state = api.content.get_state(old_product)
@@ -71,8 +159,8 @@ def migrate_product(context):
         new_product.reindexObject()
 
         new_product.modification_date = modification_date
-        new_product.reindexObject(idxs=['modified'])
+        new_product.reindexObject(idxs=["modified"])
 
-        logger.info('Migrated product {0}'.format(new_product.absolute_url()))
+        logger.info("Migrated product {0}".format(new_product.absolute_url()))
 
-    del portal_types['produit']
+    del portal_types["produit"]
