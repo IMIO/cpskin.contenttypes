@@ -8,7 +8,7 @@ Changelog
 - Fix a bug when we get current wf state. We now use updateRoleMappingsFor to get good permissions and good roles in the current state. (products and procedure)
   [boulch]
 
-- Add "procedure" content type + step to migrate old "demarche" document to procedure.
+- Add "procedure" content type + step to migrate old "demarche" document to procedure : WEBOTT-19
   [boulch]
 
 
