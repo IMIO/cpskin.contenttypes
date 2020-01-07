@@ -30,9 +30,6 @@ def migrate_procedures(context):
         context.runImportStepFromProfile(
             "profile-cpskin.contenttypes:default", "typeinfo"
         )
-        context.runImportStepFromProfile(
-            "profile-cpskin.contenttypes:default", "rolemap"
-        )
 
     # Récupérer les mots clés "je trouve"
     # types to migrate
@@ -86,9 +83,6 @@ def migrate_procedures(context):
         new_procedure.standardTags = copy.deepcopy(old_procedure.standardTags)
         new_procedure.relatedItems = copy.deepcopy(old_procedure.relatedItems)
 
-        new_procedure.modification_date = modification_date
-        new_procedure.reindexObject(idxs=["modified"])
-
         # restore workflow state
         state = api.content.get_state(old_procedure)
         api.content.transition(obj=new_procedure, to_state=state)
@@ -97,8 +91,13 @@ def migrate_procedures(context):
         api.content.rename(obj=new_procedure, new_id=new_id, safe_id=True)
         new_procedure.reindexObject()
 
+        wf = new_procedure.portal_workflow.getWorkflowsFor(new_procedure)[0]
+        wf.updateRoleMappingsFor(new_procedure)
+        new_procedure.reindexObject()
+
         new_procedure.modification_date = modification_date
         new_procedure.reindexObject(idxs=["modified"])
+
         logger.info("Migrated procedure {0}".format(new_procedure.absolute_url()))
     if "demarche" in portal_types:
         del portal_types["demarche"]
@@ -156,6 +155,10 @@ def migrate_product(context):
 
         api.content.delete(obj=old_product, check_linkintegrity=True)
         api.content.rename(obj=new_product, new_id=new_id, safe_id=True)
+        new_product.reindexObject()
+
+        wf = new_product.portal_workflow.getWorkflowsFor(new_product)[0]
+        wf.updateRoleMappingsFor(new_product)
         new_product.reindexObject()
 
         new_product.modification_date = modification_date
