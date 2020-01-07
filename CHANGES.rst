@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-1.0.3 (unreleased)
+1.0.3 (2020-01-07)
 ------------------
 
 - Fix a bug when we get current wf state. We now use updateRoleMappingsFor to get good permissions and good roles in the current state. (products and procedure)
