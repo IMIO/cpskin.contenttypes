@@ -5,7 +5,11 @@ Changelog
 1.0.3 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Fix a bug when we get current wf state. We now use updateRoleMappingsFor to get good permissions and good roles in the current state. (products and procedure)
+  [boulch]
+
+- Add "procedure" content type + step to migrate old "demarche" document to procedure.
+  [boulch]
 
 
 1.0.2 (2019-03-18)
