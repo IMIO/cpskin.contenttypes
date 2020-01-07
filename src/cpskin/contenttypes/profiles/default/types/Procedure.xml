@@ -15,13 +15,12 @@
   <property name="factory">Procedure</property>
   <property name="icon_expr">string:${portal_url}/++resource++cpskin.contenttypes.resources/procedure.png</property>
   <property name="link_target"></property>
-
+  <property name="add_permission">cmf.AddPortalContent</property>
   <property name="global_allow">True</property>
   <property name="filter_content_types">False</property>
   <property name="allowed_content_types">
   </property>
 
-  <property name="add_permission">cpskin.contenttypes.AddProcedure</property>
   <property name="klass">cpskin.contenttypes.content.procedure.Procedure</property>
   <property name="model_file"></property>
   <property name="model_source"></property>
@@ -46,7 +45,6 @@
     <element value="plone.app.imagecropping.behaviors.IImageCroppingBehavior"/>
   </property>
 
-  <property name="add_view_expr">string:${folder_url}/++add++Procedure</property>
   <property name="default_view">view</property>
   <property name="default_view_fallback">False</property>
   <property name="immediate_view">view</property>
