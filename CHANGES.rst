@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-1.0.4 (unreleased)
+1.0.4 (2020-01-10)
 ------------------
 
 - Refactoring setuphandlers. Remove old procedure at end of the process. Better manage for demarche (old_procedure) relatedItems
