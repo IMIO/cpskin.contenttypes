@@ -30,6 +30,7 @@ def get_brains():
     # Récupérer les mots clés "je trouve"
     # types to migrate
     portal_types = api.portal.get_tool(name="portal_types")
+    existing_brains = []
     if "demarche" in portal_types:
         existing_brains = api.content.find(portal_type="demarche")
     else:
@@ -253,7 +254,7 @@ def migrate_product(context):
         if old_image:
             filename = old_image.filename
             old_image_data = old_image.data
-            namedblobimage = NamedBlobImage(data=old_image_data, filename=filename,)
+            namedblobimage = NamedBlobImage(data=old_image_data, filename=filename)
             setattr(new_product, "image", namedblobimage)
 
         # restore workflow state
