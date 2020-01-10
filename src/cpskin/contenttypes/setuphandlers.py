@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 
 from plone import api
+from plone.app.layout.navigation.interfaces import INavigationRoot
+from plone.app.textfield.interfaces import IRichText
 from plone.app.textfield.value import RichTextValue
 from plone.namedfile.file import NamedBlobImage
-from plone.app.layout.navigation.interfaces import INavigationRoot
 from Products.CMFPlone.utils import safe_unicode
+from z3c.relationfield.relation import RelationValue
 from zope import component
 from zope.intid.interfaces import IIntIds
-from z3c.relationfield.relation import RelationValue
-from plone.app.textfield.interfaces import IRichText
 from zope.schema import getFieldsInOrder
 
 import copy
@@ -106,8 +106,8 @@ def migrate_procedures(context):
             # get first and set into new_procedure.text
             attr = None
             if "demarche" in portal_types:
-                dem = portal_types['demarche']
-                fields = getFieldsInOrder( dem.lookupSchema() )
+                dem = portal_types["demarche"]
+                fields = getFieldsInOrder(dem.lookupSchema())
                 for name, field in fields:
                     if IRichText.providedBy(field):
                         attr = name
@@ -161,17 +161,36 @@ def get_related_items():
     for brain in existing_brains:
         old_procedure = brain.getObject()
         container = old_procedure.aq_parent
-        new_procedure  = container.restrictedTraverse("{}/{}".format("/".join(container.getPhysicalPath()),"new-{}".format(old_procedure.getId())))
+        new_procedure = container.restrictedTraverse(
+            "{}/{}".format(
+                "/".join(container.getPhysicalPath()),
+                "new-{}".format(old_procedure.getId()),
+            )
+        )
         if hasattr(old_procedure, "relatedItems") and old_procedure.relatedItems != []:
             for rel in old_procedure.relatedItems:
-                if rel.to_object is not None and rel.to_object.getTypeInfo().getId() == "demarche":
+                if (
+                    rel.to_object is not None
+                    and rel.to_object.getTypeInfo().getId() == "demarche"
+                ):
                     intids = component.getUtility(IIntIds)
                     relobj = rel.to_object
-                    re = relobj.aq_parent.restrictedTraverse("{}/{}".format("/".join(relobj.aq_parent.getPhysicalPath()),"new-{}".format(relobj.getId())))
+                    re = relobj.aq_parent.restrictedTraverse(
+                        "{}/{}".format(
+                            "/".join(relobj.aq_parent.getPhysicalPath()),
+                            "new-{}".format(relobj.getId()),
+                        )
+                    )
                     old_procedure.relatedItems.append(RelationValue(intids.getId(re)))
                     old_procedure.relatedItems.remove(rel)
-                    new_procedure.relatedItems = copy.deepcopy(old_procedure.relatedItems)
-                    logger.info("{0} lien vers {1}".format(new_procedure.absolute_url(), re.absolute_url()))
+                    new_procedure.relatedItems = copy.deepcopy(
+                        old_procedure.relatedItems
+                    )
+                    logger.info(
+                        "{0} lien vers {1}".format(
+                            new_procedure.absolute_url(), re.absolute_url()
+                        )
+                    )
         new_procedure.reindexObject()
 
 
@@ -180,11 +199,15 @@ def remove_old_procedures():
     for brain in existing_brains:
         old_procedure = brain.getObject()
         container = old_procedure.aq_parent
-        new_procedure  = container.restrictedTraverse("{}/{}".format("/".join(container.getPhysicalPath()),"new-{}".format(old_procedure.getId())))
+        new_procedure = container.restrictedTraverse(
+            "{}/{}".format(
+                "/".join(container.getPhysicalPath()),
+                "new-{}".format(old_procedure.getId()),
+            )
+        )
         new_id = new_procedure.getId().replace("new-", "")
         api.content.delete(obj=old_procedure, check_linkintegrity=True)
         api.content.rename(obj=new_procedure, new_id=new_id, safe_id=True)
-
 
 
 def migrate_product(context):
