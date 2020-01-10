@@ -3,8 +3,13 @@
 from plone import api
 from plone.app.textfield.value import RichTextValue
 from plone.namedfile.file import NamedBlobImage
-from Products.CMFPlone.interfaces.siteroot import IPloneSiteRoot
+from plone.app.layout.navigation.interfaces import INavigationRoot
 from Products.CMFPlone.utils import safe_unicode
+from zope import component
+from zope.intid.interfaces import IIntIds
+from z3c.relationfield.relation import RelationValue
+from plone.app.textfield.interfaces import IRichText
+from zope.schema import getFieldsInOrder
 
 import copy
 import logging
@@ -21,18 +26,10 @@ def post_install(context):
     migrate_procedures(context)
 
 
-def migrate_procedures(context):
-    # keywords (DEMARCHE)
-    portal_types = api.portal.get_tool(name="portal_types")
-    existing_brains = []
-    # new type Procedure.
-    if "Procedure" not in portal_types:
-        context.runImportStepFromProfile(
-            "profile-cpskin.contenttypes:default", "typeinfo"
-        )
-
+def get_brains():
     # Récupérer les mots clés "je trouve"
     # types to migrate
+    portal_types = api.portal.get_tool(name="portal_types")
     if "demarche" in portal_types:
         existing_brains = api.content.find(portal_type="demarche")
     else:
@@ -43,17 +40,36 @@ def migrate_procedures(context):
             for tag in brain.isearchTags:
                 if "DEMARCHE" in unidecode.unidecode(safe_unicode(tag)).upper():
                     existing_brains.append(brain)
+    return existing_brains
+
+
+def migrate_procedures(context):
+    # keywords (DEMARCHE)
+    # history_for_related_items = []
+    portal_types = api.portal.get_tool(name="portal_types")
+    existing_brains = []
+    # new type Procedure.
+    if "Procedure" not in portal_types:
+        context.runImportStepFromProfile(
+            "profile-cpskin.contenttypes:default", "typeinfo"
+        )
+
+    existing_brains = get_brains()
+
     for brain in existing_brains:
         old_procedure = brain.getObject()
         container = old_procedure.aq_parent
         # No procedure in PloneSite root
         # In each site, there is a document with a keyword
         # "démarche administrative" that stores the keyword.
-        if IPloneSiteRoot.providedBy(container):
+        if INavigationRoot.providedBy(container):
             continue
         new_id = old_procedure.id
         temp_id = "new-{0}".format(new_id)
         # new type "Procedure"
+        if portal_types.get("Procedure") not in container.allowedContentTypes():
+            container.locally_allowed_types.append("Procedure")
+            # container.allowedContentTypes().append(portal_types.get("Procedure"))
         new_procedure = api.content.create(
             container=container,
             type="Procedure",
@@ -61,34 +77,67 @@ def migrate_procedures(context):
             title=old_procedure.Title(),
             safe_id=False,
         )
-
         new_procedure.description = old_procedure.Description()
         if hasattr(old_procedure, "e_guichet"):
             new_procedure.e_guichet = old_procedure.e_guichet
-        if old_procedure.text:
-            new_procedure.text = RichTextValue(
-                raw=old_procedure.text.raw,
-                mimeType=old_procedure.text.mimeType,
-                outputMimeType=old_procedure.text.outputMimeType,
-            )
+        if hasattr(old_procedure, "text"):
+            if old_procedure.text is not None:
+                new_procedure.text = RichTextValue(
+                    raw=old_procedure.text.raw,
+                    mimeType=old_procedure.text.mimeType,
+                    outputMimeType=old_procedure.text.outputMimeType,
+                )
+        elif hasattr(old_procedure, "texte"):
+            if old_procedure.texte is not None:
+                new_procedure.text = RichTextValue(
+                    raw=old_procedure.texte.raw,
+                    mimeType=old_procedure.texte.mimeType,
+                    outputMimeType=old_procedure.texte.outputMimeType,
+                )
+        elif hasattr(old_procedure, "contenu"):
+            if old_procedure.contenu is not None:
+                new_procedure.text = RichTextValue(
+                    raw=old_procedure.contenu.raw,
+                    mimeType=old_procedure.contenu.mimeType,
+                    outputMimeType=old_procedure.contenu.outputMimeType,
+                )
+        else:
+            # find RichText on "demarche" (old_procedure)
+            # get first and set into new_procedure.text
+            attr = None
+            if "demarche" in portal_types:
+                dem = portal_types['demarche']
+                fields = getFieldsInOrder( dem.lookupSchema() )
+                for name, field in fields:
+                    if IRichText.providedBy(field):
+                        attr = name
+                        break
+            if attr is not None:
+                if old_procedure.__dict__.get(attr) is not None:
+                    new_procedure.text = RichTextValue(
+                        raw=old_procedure.__dict__.get(attr).raw,
+                        mimeType=old_procedure.__dict__.get(attr).mimeType,
+                        outputMimeType=old_procedure.__dict__.get(attr).outputMimeType,
+                    )
         new_procedure.effective_date = old_procedure.effective_date
         new_procedure.creation_date = old_procedure.creation_date
         modification_date = old_procedure.modification_date
         new_procedure.workflow_history = old_procedure.workflow_history
         new_procedure.creators = old_procedure.creators
         new_procedure.language = old_procedure.language
-        new_procedure.hiddenTags = copy.deepcopy(old_procedure.hiddenTags)
-        new_procedure.iamTags = copy.deepcopy(old_procedure.iamTags)
-        new_procedure.isearchTags = copy.deepcopy(old_procedure.isearchTags)
-        new_procedure.standardTags = copy.deepcopy(old_procedure.standardTags)
-        new_procedure.relatedItems = copy.deepcopy(old_procedure.relatedItems)
+        if hasattr(old_procedure, "hiddenTags"):
+            new_procedure.hiddenTags = copy.deepcopy(old_procedure.hiddenTags)
+        if hasattr(old_procedure, "iamTags"):
+            new_procedure.iamTags = copy.deepcopy(old_procedure.iamTags)
+        if hasattr(old_procedure, "isearchTags"):
+            new_procedure.isearchTags = copy.deepcopy(old_procedure.isearchTags)
+        if hasattr(old_procedure, "standardTags"):
+            new_procedure.standardTags = copy.deepcopy(old_procedure.standardTags)
 
         # restore workflow state
         state = api.content.get_state(old_procedure)
         api.content.transition(obj=new_procedure, to_state=state)
 
-        api.content.delete(obj=old_procedure, check_linkintegrity=True)
-        api.content.rename(obj=new_procedure, new_id=new_id, safe_id=True)
         new_procedure.reindexObject()
 
         wf = new_procedure.portal_workflow.getWorkflowsFor(new_procedure)[0]
@@ -97,10 +146,45 @@ def migrate_procedures(context):
 
         new_procedure.modification_date = modification_date
         new_procedure.reindexObject(idxs=["modified"])
-
         logger.info("Migrated procedure {0}".format(new_procedure.absolute_url()))
+
+    get_related_items()
+    # Remove old procedures after conversion process
+    # because of old procedures relatedItems !
+    remove_old_procedures()
     if "demarche" in portal_types:
         del portal_types["demarche"]
+
+
+def get_related_items():
+    existing_brains = get_brains()
+    for brain in existing_brains:
+        old_procedure = brain.getObject()
+        container = old_procedure.aq_parent
+        new_procedure  = container.restrictedTraverse("{}/{}".format("/".join(container.getPhysicalPath()),"new-{}".format(old_procedure.getId())))
+        if hasattr(old_procedure, "relatedItems") and old_procedure.relatedItems != []:
+            for rel in old_procedure.relatedItems:
+                if rel.to_object is not None and rel.to_object.getTypeInfo().getId() == "demarche":
+                    intids = component.getUtility(IIntIds)
+                    relobj = rel.to_object
+                    re = relobj.aq_parent.restrictedTraverse("{}/{}".format("/".join(relobj.aq_parent.getPhysicalPath()),"new-{}".format(relobj.getId())))
+                    old_procedure.relatedItems.append(RelationValue(intids.getId(re)))
+                    old_procedure.relatedItems.remove(rel)
+                    new_procedure.relatedItems = copy.deepcopy(old_procedure.relatedItems)
+                    logger.info("{0} lien vers {1}".format(new_procedure.absolute_url(), re.absolute_url()))
+        new_procedure.reindexObject()
+
+
+def remove_old_procedures():
+    existing_brains = get_brains()
+    for brain in existing_brains:
+        old_procedure = brain.getObject()
+        container = old_procedure.aq_parent
+        new_procedure  = container.restrictedTraverse("{}/{}".format("/".join(container.getPhysicalPath()),"new-{}".format(old_procedure.getId())))
+        new_id = new_procedure.getId().replace("new-", "")
+        api.content.delete(obj=old_procedure, check_linkintegrity=True)
+        api.content.rename(obj=new_procedure, new_id=new_id, safe_id=True)
+
 
 
 def migrate_product(context):
