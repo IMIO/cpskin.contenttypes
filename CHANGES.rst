@@ -5,7 +5,8 @@ Changelog
 1.0.4 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Refactoring setuphandlers. Remove old procedure at end of the process. Better manage for demarche (old_procedure) relatedItems
+  [boulch]
 
 
 1.0.3 (2020-01-07)
