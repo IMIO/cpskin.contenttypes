@@ -5,7 +5,8 @@ Changelog
 1.0.5 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Don't try to migrate related items in NavigationRoot and don't try to remove them.
+  [boulch]
 
 
 1.0.4 (2020-01-10)
