@@ -162,6 +162,8 @@ def get_related_items():
     for brain in existing_brains:
         old_procedure = brain.getObject()
         container = old_procedure.aq_parent
+        if INavigationRoot.providedBy(container):
+            continue
         new_procedure = container.restrictedTraverse(
             "{}/{}".format(
                 "/".join(container.getPhysicalPath()),
@@ -200,6 +202,8 @@ def remove_old_procedures():
     for brain in existing_brains:
         old_procedure = brain.getObject()
         container = old_procedure.aq_parent
+        if INavigationRoot.providedBy(container):
+            continue
         new_procedure = container.restrictedTraverse(
             "{}/{}".format(
                 "/".join(container.getPhysicalPath()),
