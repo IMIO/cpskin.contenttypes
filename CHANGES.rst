@@ -5,7 +5,8 @@ Changelog
 1.0.6 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Add custom "procedure_view" for content type "procedure".
+  [boulch]
 
 
 1.0.5 (2020-01-14)
