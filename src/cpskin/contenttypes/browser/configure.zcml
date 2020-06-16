@@ -10,6 +10,15 @@
       />
 
   <browser:page
+      name="procedure_view"
+      for="cpskin.contenttypes.content.procedure.IProcedure"
+      class=".procedure.ProcedureView"
+      template="templates/procedure.pt"
+      layer="cpskin.contenttypes.interfaces.ICpskinContenttypesLayer"
+      permission="zope2.View"
+      />
+
+  <browser:page
       name="view"
       for="cpskin.contenttypes.content.product.IProduct"
       class=".product.ProductView"

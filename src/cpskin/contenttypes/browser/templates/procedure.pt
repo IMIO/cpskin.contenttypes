@@ -1,0 +1,35 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="cpskin">
+<body>
+
+<metal:main fill-slot="content-core">
+  <div class="field"
+       tal:condition="view/is_ts_behavior_is_install">
+    <label class="horizontal e_guichet"
+         for="form-widgets-e_guichet"
+         i18n:translate="">Procedure E-guichet</label>
+    <span class="text-widget textline-field"
+        id="form-widgets-e_guichet"
+        tal:content="context/e_guichet"></span>
+  </div>
+
+  <div class="field"
+       tal:condition="context/procedures">
+    <label class="horizontal procedure"
+         for="form-widgets-procedure"
+         i18n:translate="">Procedure E-guichet</label>
+    <a class="text-widget textline-field"
+        id="form-widgets-procedure"
+        i18n:translate=""
+        tal:attributes="href context/procedures">Link to e-guichet</a>
+  </div>
+
+</metal:main>
+
+</body>
+</html>
