@@ -52,6 +52,7 @@ setup(
         'plone.app.imagecropping',
         'cpskin.locales',
         'unidecode',
+        'imio.behavior.teleservices',
     ],
     extras_require={
         'test': [

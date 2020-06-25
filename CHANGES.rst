@@ -6,7 +6,7 @@ Changelog
 ------------------
 
 - Add custom "procedure_view" for content type "procedure".
-  [boulch]
+  [boulch, laulaz]
 
 
 1.0.5 (2020-01-14)
