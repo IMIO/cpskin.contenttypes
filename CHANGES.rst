@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-1.0.6 (unreleased)
+1.0.6 (2020-07-01)
 ------------------
 
 - Add custom "procedure_view" for content type "procedure".
