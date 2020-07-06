@@ -18,10 +18,6 @@
     </script>
 
   <div class="field"
-       tal:condition="view/is_ts_behavior_is_install">
-    <label class="horizontal e_guichet"
-         for="form-widgets-e_guichet"
-         i18n:translate="">Procedure E-guichet</label>
        tal:condition="view/print_basic_e_guichet_field">
     <span class="text-widget textline-field"
         id="form-widgets-e_guichet"
@@ -30,13 +26,17 @@
 
   <div class="field"
        tal:condition="context/procedures">
-    <label class="horizontal procedure"
-         for="form-widgets-procedure"
-         i18n:translate="">Procedure E-guichet</label>
-    <a class="text-widget textline-field"
+    <button class="btn link-e-guichet"
         id="form-widgets-procedure"
         i18n:translate=""
-        tal:attributes="href context/procedures">Link to e-guichet</a>
+        tal:attributes="onclick python:'window.open(\'{}\',\'_blank\')'.format(context.procedures)">
+        Perform this procedure on e-guichet</button>
+  </div>
+
+  <div class="field"
+       tal:condition="context/text">
+    <p class="text-widget textline-field"
+        id="form-widgets-text" tal:content="structure context/text/output"></p>
   </div>
 
   <div class="product-leadImage" tal:condition="view/available">

@@ -45,7 +45,7 @@
     <element value="plone.app.imagecropping.behaviors.IImageCroppingBehavior"/>
   </property>
 
-  <property name="default_view">view</property>
+  <property name="default_view">procedure_view</property>
   <property name="default_view_fallback">False</property>
   <property name="immediate_view">view</property>
   <property name="view_methods">
