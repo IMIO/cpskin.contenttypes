@@ -9,6 +9,7 @@
   <include package=".browser" />
 
   <include file="permissions.zcml" />
+  <include file="profiles.zcml" />
 
   <genericsetup:registerProfile
       name="default"
