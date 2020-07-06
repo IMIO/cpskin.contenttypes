@@ -8,11 +8,21 @@
 <body>
 
 <metal:main fill-slot="content-core">
+
+    <script type="text/javascript">
+        jQuery(document).ready(function($) {
+            if (typeof $('.product-leadImage a').fancybox === "function") {
+                $('.product-leadImage a').fancybox();
+            }
+        });
+    </script>
+
   <div class="field"
        tal:condition="view/is_ts_behavior_is_install">
     <label class="horizontal e_guichet"
          for="form-widgets-e_guichet"
          i18n:translate="">Procedure E-guichet</label>
+       tal:condition="view/print_basic_e_guichet_field">
     <span class="text-widget textline-field"
         id="form-widgets-e_guichet"
         tal:content="context/e_guichet"></span>
@@ -29,6 +39,18 @@
         tal:attributes="href context/procedures">Link to e-guichet</a>
   </div>
 
+  <div class="product-leadImage" tal:condition="view/available">
+    <a href="" title=""
+       tal:define="has_img context/image|nothing;
+                   scales context/@@images|nothing;"
+       tal:condition="python:has_img and scales"
+       tal:attributes="href python: scales.scale('image').url;
+                       title context/image_caption;
+                       ">
+      <img
+          tal:replace="structure python: scales.scale('image', scale='preview').tag()" />
+    </a>
+  </div>
 </metal:main>
 
 </body>

@@ -6,22 +6,30 @@ from plone.dexterity.browser import add
 from plone.dexterity.browser import edit
 from plone.dexterity.interfaces import IDexterityFTI
 from Products.Five import BrowserView
+from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from zope.component import queryUtility
 
 
 class ProcedureView(BrowserView):
     """
     """
+    index = ViewPageTemplateFile('templates/procedure.pt')
 
-    def is_ts_behavior_is_install(self):
+    def print_basic_e_guichet_field(self):
         if ITsProcedure.providedBy(self.context) is True:
-            # Don't print e_guichet field
+            # Don't print basic e_guichet field
             return False
         elif self.context.e_guichet is None:
-            # Don't print e_guichet field
+            # Don't print basic e_guichet field
             return False
         else:
             return True
+
+    def available(self):
+        scale_context = ILeadImage(self.context)
+        return True if scale_context.image else False
+
+
 class ProcedureEditForm(edit.DefaultEditForm):
     # if behavior is install so we hide default e_guichet field.
     def updateWidgets(self):
