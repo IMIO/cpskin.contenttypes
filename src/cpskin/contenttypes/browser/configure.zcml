@@ -27,4 +27,27 @@
       permission="zope2.View"
       />
 
+  <browser:page
+      name="edit"
+      for="cpskin.contenttypes.content.procedure.IProcedure"
+      layer="cpskin.contenttypes.interfaces.ICpskinContenttypesLayer"
+      class=".procedure.ProcedureEditForm"
+      permission="cmf.ModifyPortalContent"
+      />
+
+  <adapter
+      for="Products.CMFCore.interfaces.IFolderish
+           cpskin.contenttypes.interfaces.ICpskinContenttypesLayer
+           plone.dexterity.interfaces.IDexterityFTI"
+      provides="zope.publisher.interfaces.browser.IBrowserPage"
+      factory=".procedure.AddView"
+      name="Procedure"
+      />
+  <class class=".procedure.AddView">
+      <require
+          permission="cmf.AddPortalContent"
+          interface="zope.publisher.interfaces.browser.IBrowserPage"
+          />
+  </class>
+
 </configure>
