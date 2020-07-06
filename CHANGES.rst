@@ -5,7 +5,15 @@ Changelog
 1.0.7 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Override edit and add View : When ITsProcedure behavior is there, we want to hide e_guichet basic text field.
+  [boulch]
+- upgradesteps : To apply new default procedure template.
+  [boulch]
+- Procedure template : Change "a href" link to e-guichet by "button" to e-guichet.
+  [boulch]
+- Procedure template : (Add Leadimage fancybox, add RichText)
+  [boulch]
+
 
 
 1.0.6 (2020-07-01)
