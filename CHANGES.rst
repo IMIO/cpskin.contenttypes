@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-1.0.7 (unreleased)
+1.0.7 (2020-07-06)
 ------------------
 
 - Override edit and add View : When ITsProcedure behavior is there, we want to hide e_guichet basic text field.
