@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-1.0.8 (unreleased)
+1.0.8 (2020-07-08)
 ------------------
 
 - [WEB-3381] : Fix procedure contenttypes view when imio.behavior.teleservices isn't install.
