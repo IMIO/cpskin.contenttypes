@@ -15,6 +15,13 @@ class ProcedureView(BrowserView):
     """
     index = ViewPageTemplateFile('templates/procedure.pt')
 
+    def has_procedures(self):
+        # Get this attr thanks to behavior : imio.behavior.teleservices.
+        if getattr(self.context, "procedures", None) is None:
+            return False
+        else:
+            return True
+
     def print_basic_e_guichet_field(self):
         if ITsProcedure.providedBy(self.context) is True:
             # Don't print basic e_guichet field

@@ -5,7 +5,8 @@ Changelog
 1.0.8 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- [WEB-3381] : Fix procedure contenttypes view when imio.behavior.teleservices isn't install.
+  [boulch]
 
 
 1.0.7 (2020-07-06)

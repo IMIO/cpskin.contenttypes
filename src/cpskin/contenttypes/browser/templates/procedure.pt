@@ -25,7 +25,7 @@
   </div>
 
   <div class="field"
-       tal:condition="context/procedures">
+       tal:condition="view/has_procedures">
     <button class="btn link-e-guichet"
         id="form-widgets-procedure"
         i18n:translate=""
