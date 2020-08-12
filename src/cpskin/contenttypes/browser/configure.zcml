@@ -10,8 +10,8 @@
       />
 
   <browser:page
-      name="procedure_view"
-      for="cpskin.contenttypes.content.procedure.IProcedure"
+      name="view"
+      for="imio.behavior.teleservices.behaviors.ts_procedure.ITsProcedure"
       class=".procedure.ProcedureView"
       template="templates/procedure.pt"
       layer="cpskin.contenttypes.interfaces.ICpskinContenttypesLayer"
