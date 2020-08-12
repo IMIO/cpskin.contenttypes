@@ -6,6 +6,7 @@ Changelog
 ------------------
 
 - [WEB-3405] : First step :Change procedure default view. 
+  [boulch]
 
 
 1.0.8 (2020-07-08)
