@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-1.0.10 (unreleased)
+1.0.10 (2020-08-12)
 -------------------
 
 - [WEB-3405] : Don't forget upgrade step to (re)change view on existing objects
