@@ -5,13 +5,13 @@ Changelog
 1.0.10 (unreleased)
 -------------------
 
-- Nothing changed yet.
-
+- [WEB-3405] : Don't forget upgrade step to (re)change view on existing objects
+  [boulch]
 
 1.0.9 (2020-08-12)
 ------------------
 
-- [WEB-3405] : First step :Change procedure default view. 
+- [WEB-3405] : First step :Change procedure default view.
   [boulch]
 
 
