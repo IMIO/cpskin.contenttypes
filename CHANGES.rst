@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-1.0.9 (unreleased)
+1.0.9 (2020-08-12)
 ------------------
 
 - [WEB-3405] : First step :Change procedure default view. 
