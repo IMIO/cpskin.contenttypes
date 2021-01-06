@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-1.0.11 (unreleased)
+1.0.11 (2021-01-06)
 -------------------
 
 - Remove lead-image out of procedure template

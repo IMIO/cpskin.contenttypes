@@ -14,7 +14,7 @@ long_description = '\n\n'.join([
 
 setup(
     name='cpskin.contenttypes',
-    version='1.0.11.dev0',
+    version='1.0.11',
     description="CPSkin content types",
     long_description=long_description,
     # Get more from https://pypi.python.org/pypi?%3Aaction=list_classifiers
