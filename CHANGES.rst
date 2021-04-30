@@ -5,7 +5,8 @@ Changelog
 1.0.12 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Fix / update buildout & dependencies
+  [laulaz]
 
 
 1.0.11 (2021-01-06)
