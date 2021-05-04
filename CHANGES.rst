@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-1.0.12 (unreleased)
+1.0.12 (2021-05-04)
 -------------------
 
 - e_guichet field is printing like a link in template
