@@ -5,6 +5,9 @@ Changelog
 1.0.12 (unreleased)
 -------------------
 
+- e_guichet field is printing like a link in template
+  [boulch]
+
 - Add new procedure validator
   [boulch]
 

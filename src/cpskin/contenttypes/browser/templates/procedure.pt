@@ -16,12 +16,13 @@
             }
         });
     </script>
-
   <div class="field"
        tal:condition="view/print_basic_e_guichet_field">
-    <span class="text-widget textline-field"
-        id="form-widgets-e_guichet"
-        tal:content="context/e_guichet"></span>
+    <a class="text-widget textline-field"
+       id="form-widgets-e_guichet"
+       target="_blank"
+       tal:attributes="href context/e_guichet"
+       tal:content="context/e_guichet"></a>
   </div>
 
   <div class="field"
