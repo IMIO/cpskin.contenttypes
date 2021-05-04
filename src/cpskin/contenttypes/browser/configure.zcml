@@ -11,7 +11,7 @@
 
   <browser:page
       name="view"
-      for="imio.behavior.teleservices.behaviors.ts_procedure.ITsProcedure"
+      for="cpskin.contenttypes.content.procedure.IProcedure"
       class=".procedure.ProcedureView"
       template="templates/procedure.pt"
       layer="cpskin.contenttypes.interfaces.ICpskinContenttypesLayer"

@@ -5,6 +5,9 @@ Changelog
 1.0.12 (unreleased)
 -------------------
 
+- Add new procedure validator
+  [boulch]
+
 - e_guichet field always available (even if imio.behavior.teleservice is installed)
   [boulch]
 
