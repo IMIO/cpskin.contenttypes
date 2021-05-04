@@ -23,10 +23,7 @@ class ProcedureView(BrowserView):
             return True
 
     def print_basic_e_guichet_field(self):
-        if ITsProcedure.providedBy(self.context) is True:
-            # Don't print basic e_guichet field
-            return False
-        elif self.context.e_guichet is None:
+        if self.context.e_guichet is None:
             # Don't print basic e_guichet field
             return False
         else:
@@ -41,8 +38,8 @@ class ProcedureEditForm(edit.DefaultEditForm):
     # if behavior is install so we hide default e_guichet field.
     def updateWidgets(self):
         super(ProcedureEditForm, self).updateWidgets()
-        if ITsProcedure.providedBy(self.context):
-            self.widgets['e_guichet'].mode = 'hidden'
+        #if ITsProcedure.providedBy(self.context):
+        #    self.widgets['e_guichet'].mode = 'hidden'
 
 
 class CustomAddForm(add.DefaultAddForm):
@@ -52,8 +49,8 @@ class CustomAddForm(add.DefaultAddForm):
         super(CustomAddForm, self).updateWidgets()
         # When we add new contentype object, our behavior doesn't exist yet
         # So we search ITsProcedure in FTI
-        if self.has_behavior("Procedure", "imio.behavior.teleservices.behaviors.ts_procedure.ITsProcedure"):
-            self.widgets['e_guichet'].mode = 'hidden'
+        #if self.has_behavior("Procedure", "imio.behavior.teleservices.behaviors.ts_procedure.ITsProcedure"):
+        #    self.widgets['e_guichet'].mode = 'hidden'
 
     def has_behavior(self, type_name, behavior_name):
         """Check if a behavior is on portal_type"""
