@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-1.0.13 (unreleased)
+1.0.13 (2021-05-17)
 -------------------
 
 - Build more specific procedure interface
