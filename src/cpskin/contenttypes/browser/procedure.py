@@ -13,7 +13,6 @@ from zope.component import queryUtility
 class ProcedureView(BrowserView):
     """
     """
-    index = ViewPageTemplateFile('templates/procedure.pt')
 
     def has_procedures(self):
         # Get this attr thanks to behavior : imio.behavior.teleservices.
