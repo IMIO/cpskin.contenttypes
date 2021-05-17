@@ -5,7 +5,12 @@ Changelog
 1.0.13 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Build more specific procedure interface
+  [boulch]
+- Remove useless index because template si specifying in zcml file
+  [boulch]
+- Add add_view Procedure expression
+  [boulch]
 
 
 1.0.12 (2021-05-04)
